@@ -21,12 +21,12 @@ const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-              CA
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+              <img src="logo-canine1.jpg" alt="" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">CANINE ANIMALERIE</h1>
-              <p className="text-sm text-gray-600">Votre compagnon idéal vous attend</p>
+              <p className="text-sm text-gray-600">Votre compagnon idéal vous attend !!</p>
             </div>
           </div>
 

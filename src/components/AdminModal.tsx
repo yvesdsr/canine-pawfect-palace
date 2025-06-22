@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
+import { X, Plus, Trash2, Upload } from 'lucide-react';
 import { Dog } from '../types/Dog';
 import { addDog, removeDog, getDogs } from '../utils/dogStorage';
 
@@ -15,6 +15,7 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, onDogsUpdated 
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showAddForm, setShowAddForm] = useState(false);
   const [dogs, setDogs] = useState<Dog[]>(getDogs());
+  const [imagePreview, setImagePreview] = useState<string>('');
 
   const [newDog, setNewDog] = useState<Omit<Dog, 'id'>>({
     name: '',
@@ -46,6 +47,19 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, onDogsUpdated 
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setImagePreview(result);
+        setNewDog({ ...newDog, image: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddDog = (e: React.FormEvent) => {
     e.preventDefault();
     const dog: Dog = {
@@ -56,6 +70,7 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, onDogsUpdated 
     setDogs(getDogs());
     onDogsUpdated();
     setShowAddForm(false);
+    setImagePreview('');
     setNewDog({
       name: '',
       breed: '',
@@ -186,14 +201,34 @@ const AdminModal: React.FC<AdminModalProps> = ({ isOpen, onClose, onDogsUpdated 
                       className="px-4 py-2 border border-gray-300 rounded-lg"
                       required
                     />
-                    <input
-                      type="url"
-                      placeholder="URL de l'image"
-                      value={newDog.image}
-                      onChange={(e) => setNewDog({ ...newDog, image: e.target.value })}
-                      className="px-4 py-2 border border-gray-300 rounded-lg"
-                      required
-                    />
+                    
+                    {/* Champ d'upload d'image */}
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Photo du chien
+                      </label>
+                      <div className="flex items-center space-x-4">
+                        <label className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors">
+                          <Upload className="w-4 h-4 mr-2" />
+                          Choisir une photo
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                            required={!newDog.image}
+                          />
+                        </label>
+                        {imagePreview && (
+                          <img
+                            src={imagePreview}
+                            alt="Aperçu"
+                            className="w-16 h-16 object-cover rounded-lg border"
+                          />
+                        )}
+                      </div>
+                    </div>
+
                     <select
                       value={newDog.gender}
                       onChange={(e) => setNewDog({ ...newDog, gender: e.target.value as 'Mâle' | 'Femelle' })}
